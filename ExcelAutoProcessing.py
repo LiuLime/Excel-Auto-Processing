@@ -75,7 +75,7 @@ def readExcelFiles(dir_path):
         book = openpyxl.load_workbook(dir_path + '/' + file)  # 这个/对应MacOS的格式  ./20220919Summary.xlsx 打开excel文档
         sheet_names = book.sheetnames #读取sheet name
         if len(sheet_names) == 1:
-            readSheet(book, sheet_name=sheet_names.__getitem__(0))
+            readSheet(book, sheet_name=sheet_names.__getitem__(0)) # 如果只有一个sheet，则直接运行
             # copyFromReturnValue(tsc)
             continue
         print("当前文件有sheet ->", sheet_names)
