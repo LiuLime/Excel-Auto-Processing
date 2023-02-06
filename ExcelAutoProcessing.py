@@ -4,25 +4,26 @@ import os
 targetToSampleAndCq = {}  # global dictionary
 
 targetSet = set()  # global set
-
-
+            
+            
+#定位及获取数据到字典
 def readSheet(book, sheet_name):
-    sheet = book[sheet_name]
+    sheet = book[sheet_name] # 获得输入的sheet
 
-    # 获取 Target、 Sample、 Mean Cq的列坐标
-    columns = list(sheet.columns)
+    # 获取 Target、 Sample、 Cq的列坐标，例如A列B列C列
+    columns = list(sheet.columns) # 获得A列，B列，C列的所有cell<Cell 'CyOMT'.D57>, <Cell 'CyOMT'.D58>；读取顺序按clomn从上往下
     originalTargets = ('Target', 'Sample', 'Cq',)
     targetsToColumnIndex = {}
-    for column in columns:
+    for column in columns:        #两个for循环，一个遍历行，一个遍历单元格
         for first_cell in column:
             # print('first_Cell', first_cell)
             coordinate = first_cell.coordinate
             # print('coordinate', coordinate)
-            value = sheet[coordinate].value
+            value = sheet[coordinate].value #value = target; sample;Cq
             # print('value', value)
-            if value in originalTargets:
-                targetsToColumnIndex[value] = coordinate.__getitem__(0)
-                # print('ttc', targetsToColumnIndex[value])
+            if value in originalTargets:  #判断如果读的A1， B1，C1值包含在originalTargets，则break
+                targetsToColumnIndex[value] = coordinate.__getitem__(0) #获取coordinate: Key[Target]-> Value[A]. getitem(0）截取第一位
+                # print('ttc', targetsToColumnIndex[value]) # output：A,B,C
                 break
 
     # 生成对应Target Sample Mean列的列数据并且对应存起来
@@ -54,17 +55,6 @@ def readSheet(book, sheet_name):
             targetToSampleAndCq[tv][sv] = cqv
     # print(targetToSampleAndCq)
 
-#
-# def copyFromReturnValue(tsc):
-#     global targetToSampleAndCq
-#     for tv in tsc:
-#         for sv in tsc[tv]:
-#             # if tv not in targetToSampleAndCq:
-#                 targetToSampleAndCq[tv] = {sv: tsc[tv][sv]}
-#             else:
-#                 targetToSampleAndCq[tv][sv] = tsc[tv][sv]
-
-
 def readExcelFiles(dir_path):
     fileList = os.listdir(dir_path) #读取该目录下的所有文件列表
     # print(fileList)
@@ -73,7 +63,7 @@ def readExcelFiles(dir_path):
             continue
         print("当前我们正在访问 ->", file)
         book = openpyxl.load_workbook(dir_path + '/' + file)  # 这个/对应MacOS的格式  ./20220919Summary.xlsx 打开excel文档
-        sheet_names = book.sheetnames #读取sheet name
+        sheet_names = book.sheetnames   #读取All sheet name
         if len(sheet_names) == 1:
             readSheet(book, sheet_name=sheet_names.__getitem__(0)) # 如果只有一个sheet，则直接运行
             # copyFromReturnValue(tsc)
@@ -90,7 +80,21 @@ def readExcelFiles(dir_path):
             continue
         else:
             # 处理单个sheet
-            readSheet(book, sheet_name=sheet_name)
+            readSheet(book, sheet_name=sheet_name)    
+    
+    
+    
+#
+# def copyFromReturnValue(tsc):
+#     global targetToSampleAndCq
+#     for tv in tsc:
+#         for sv in tsc[tv]:
+#             # if tv not in targetToSampleAndCq:
+#                 targetToSampleAndCq[tv] = {sv: tsc[tv][sv]}
+#             else:
+#                 targetToSampleAndCq[tv][sv] = tsc[tv][sv]
+
+
 
 
 # 每一组的数据处理函数
@@ -120,7 +124,7 @@ def calculate(actins, samples, target):
     return ans
 
 
-pace = 3
+pace = 3 #如果是做4次生物学重复就用pace = 4
 
 
 def chooseSample(choosed):
@@ -205,10 +209,10 @@ def output(path, target, samples):
 
 if __name__ == "__main__":
     readExcelFiles('.')
-    loop = len(targetSet)
+    loop = len(targetSet)  # targetSet->target gene number->output sheet number
     pace = int(input('当你在做单个重复实验的时候请输入1，否则输入3:'))
     for target in targetSet:
-        if target == 'Actin':
+        if target == 'Actin': # ignore Actin reference gene
             continue
         ansList = chooseSample(target)
-        output('./', target, ansList)
+        output('.', target, ansList)
