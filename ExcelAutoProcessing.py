@@ -30,27 +30,27 @@ def readSheet(book, sheet_name):
     targetsToColumn = {}
     # print('targetsToColumnIndex', targetsToColumnIndex)
     for factor in targetsToColumnIndex:
-        targetsToColumn[factor] = list(sheet[targetsToColumnIndex[factor]])
-        # print('factor', factor)
-        # print('targetsToColumn[factor]', targetsToColumn[factor])
+        targetsToColumn[factor] = list(sheet[targetsToColumnIndex[factor]]) #list sheet[A][B][C]
+        # print('factor', factor) # Target, Sample,Cq
+        # print('targetsToColumn[factor]', targetsToColumn[factor]) #targetsToColumn = {'Target':[<Cell 'Sheet1'.A1>, <Cell 'Sheet1'.A2>], 'Sample':[]}
 
     # 生成 Target->Sample 的字典映射 targetToSampleAndCq['Target'] = {} Target有Actin和例如SOMT9、IOMT4、OMT38之类的
     global targetToSampleAndCq
-    targetToSampleAndCq = {}
+#     targetToSampleAndCq = {}
     cnt = 0
     global targetSet
-    for Target, Sample, Cq in zip(targetsToColumn['Target'], targetsToColumn['Sample'], targetsToColumn['Cq']):
+    for Target, Sample, Cq in zip(targetsToColumn['Target'], targetsToColumn['Sample'], targetsToColumn['Cq']): 
         tv = Target.value
         sv = Sample.value
         cqv = Cq.value
         if tv is None:
             continue
-        if cnt == 0:  # 仅仅是为了跳过第一行而设置的flag
+        if cnt == 0:  # 仅仅是为了跳过第一行而设置的flag （jump header）
             cnt += 1
             continue
         targetSet.add(tv)
         if tv not in targetToSampleAndCq:
-            targetToSampleAndCq[tv] = {sv: cqv}
+            targetToSampleAndCq[tv] = {sv: cqv} #嵌套字典
         else:
             targetToSampleAndCq[tv][sv] = cqv
     # print(targetToSampleAndCq)
