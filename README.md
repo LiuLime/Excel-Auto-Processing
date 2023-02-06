@@ -7,7 +7,7 @@
     * Output<br><br>
     
  * [Usage]
-    1. put excel and script under same folder, and don't name the processing excel as "output.xlse", otherwise will be skipped.
+    1. put excel and script under same folder, and don't name the processing excel as "output.xlsx", otherwise will be skipped.
     2. please name the header as "Target" "Sample" "Cq" in sheet，letter case sensitive. 
     3. in the case of using mac terminal:
     ```python
