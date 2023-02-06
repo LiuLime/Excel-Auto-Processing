@@ -1,2 +1,2 @@
-# LiuYuting
-Excel Auto Processing
+# Excel auto processing for qRT-PCR
+
